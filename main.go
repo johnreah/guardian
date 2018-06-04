@@ -7,9 +7,10 @@ import (
 	"encoding/json"
 	"time"
 	"strconv"
+	"os"
 )
 
-const apiKey = "43c9eda0-c176-4a3e-9034-3cc68ccaf407"
+var apiKey string = os.Getenv("GUARDIAN_API_KEY")
 
 type (
 	SearchResponseWrapper struct {
