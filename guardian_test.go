@@ -5,6 +5,7 @@ import (
 	"time"
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"log"
 )
 
 func testSearchDefault(t *testing.T) {
@@ -37,24 +38,44 @@ func testGetSingleArticle(t *testing.T) {
 
 }
 
-func TestGuardian(t *testing.T) {
-	fmt.Println("Starting...")
-	startTime := time.Now()
-
+func testGetArticlesByDatePaginated(t *testing.T) {
 	// Get several articles
-	const pageSize int = 200
+	const pageSize int = 5
 	const numPages int = 3
-	fromTime := time.Date(2017, 12, 19, 11, 27, 14, 0, time.UTC)
+	pagesRetrieved := 0
+	fromTime := time.Date(2000, 12, 19, 0, 0, 0, 0, time.UTC)
 	for i := 1; i <= numPages; i++ {
-		articles, err := getArticlesByDatePaginated(i, pageSize, fromTime)
+		articles, err := GetArticlesByDatePaginated(i, pageSize, fromTime)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("main received %d articles\n", len(articles))
+		log.Printf("main received %d articles\n", len(articles))
 		for _, v := range articles {
-			fmt.Printf("%s\n", v.Id)
+			log.Printf("%s\n", v.Id)
+			pagesRetrieved++
 		}
 	}
+	assert.Equal(t, pageSize * numPages, pagesRetrieved)
+}
 
+func TestScraping(t *testing.T) {
+	fmt.Println("Starting...")
+	startTime := time.Now()
+
+	const pageSize int = 200
+	const numPages int = 200
+	fromTime := time.Date(1700, 1, 1, 0, 0, 0, 0, time.UTC)
+	pagesRetrieved := 0
+	for i := 1; i <= numPages; i++ {
+		articles, err := GetArticlesByDatePaginated(i, pageSize, fromTime)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("Got %d articles\n", len(articles))
+		for _, v := range articles {
+			fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id)
+			pagesRetrieved++
+		}
+	}
 	fmt.Printf("\nFinished in %dms\n", time.Now().Sub(startTime)/1000000)
 }

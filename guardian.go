@@ -8,6 +8,7 @@ import (
 	"time"
 	"strconv"
 	"os"
+	"log"
 )
 
 var apiKey string = os.Getenv("GUARDIAN_API_KEY")
@@ -94,12 +95,11 @@ func searchDefault() {
 		panic(err)
 	}
 
-	prettyJson, err := json.MarshalIndent(responseWrapper, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Print(string(prettyJson))
+	//prettyJson, err := json.MarshalIndent(responseWrapper, "", "  ")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//fmt.Print(string(prettyJson))
 }
 
 func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Article, err error) {
@@ -136,12 +136,17 @@ func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Article,
 	return articles, nil
 }
 
-func getArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (articles []Article, err error) {
-	url := "https://content.guardianapis.com/search?order-by=oldest&show-blocks=all" +
+// GetArticlesByDatePaginated retrieves a page of articles. Repeated calls with
+// increasing values for pageIndex can retrievew larger sets of articles.
+// PageIndex starts at 1. Maximum page size appears to be 200.
+func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (articles []Article, err error) {
+	url := "https://content.guardianapis.com/search?" +
+		"order-by=oldest" +
+		"&show-blocks=all" +
 		"&page=" + strconv.Itoa(pageIndex) +
 		"&page-size=" + strconv.Itoa(pageSize) +
 		"&from-date=" + startTime.Format("2006-01-02T15:04:05Z")
-	fmt.Printf("%s\n", url)
+	log.Printf("%s\n", url)
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -162,11 +167,11 @@ func getArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (a
 		return nil, err
 	}
 
-	prettyJson, err := json.MarshalIndent(responseWrapper, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(prettyJson))
+	//prettyJson, err := json.MarshalIndent(responseWrapper, "", "  ")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//fmt.Println(string(prettyJson))
 
 	for _, v := range responseWrapper.Response.Results {
 		//fmt.Printf("i=%d, id=%s\n", i, v.Id)
