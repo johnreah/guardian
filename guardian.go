@@ -18,14 +18,14 @@ type (
 	}
 
 	SearchResponse struct {
-		Status      string    `json:"status"`
-		UserTier    string    `json:"userTier"`
-		Total       int       `json:"total"`
-		StartIndex  int       `json:"startIndex"`
-		PageSize    int       `json:"pageSize"`
-		CurrentPage int       `json:"currentPage"`
-		Pages       int       `json:"pages"`
-		OrderBy     string    `json:"orderBy"`
+		Status      string     `json:"status"`
+		UserTier    string     `json:"userTier"`
+		Total       int        `json:"total"`
+		StartIndex  int        `json:"startIndex"`
+		PageSize    int        `json:"pageSize"`
+		CurrentPage int        `json:"currentPage"`
+		Pages       int        `json:"pages"`
+		OrderBy     string     `json:"orderBy"`
 		Results     []*Article `json:"results"`
 	}
 	Article struct {
@@ -50,20 +50,20 @@ type (
 	}
 
 	BlockType struct {
-		Id                 string            `json:"id"`
-		BodyHtml           string            `json:"bodyHtml"`
-		BodyTextSummary    string            `json:"bodyTextSummary"`
-		Attributes         interface{}       `json:"attributes"`
-		Published          bool              `json:"published"`
-		CreatedDate        string            `json:"createdDate"`
-		FirstPublishedDate string            `json:"firstPublishedDate"`
-		PublishedDate      string            `json:"publishedDate"`
-		LastModifedDate    string            `json:"lastModifiedDate"`
-		Contributors       interface{}       `json:"contributors"`
-		Elements           []ElementsElement `json:"elements"`
+		Id                 string         `json:"id"`
+		BodyHtml           string         `json:"bodyHtml"`
+		BodyTextSummary    string         `json:"bodyTextSummary"`
+		Attributes         interface{}    `json:"attributes"`
+		Published          bool           `json:"published"`
+		CreatedDate        string         `json:"createdDate"`
+		FirstPublishedDate string         `json:"firstPublishedDate"`
+		PublishedDate      string         `json:"publishedDate"`
+		LastModifedDate    string         `json:"lastModifiedDate"`
+		Contributors       interface{}    `json:"contributors"`
+		Elements           []*ElementType `json:"elements"`
 	}
 
-	ElementsElement struct {
+	ElementType struct {
 		Type         string      `json:"type"`
 		Assets       interface{} `json:"assets"`
 		TextTypeData interface{} `json:"textTypeData"`

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"testing"
+	"github.com/stretchr/testify/assert"
 )
 
 func testSearchDefault(t *testing.T) {
@@ -24,9 +25,16 @@ func testGetSingleArticle(t *testing.T) {
 	// Retrieve a single article
 	article, err := getArticleById("news/1822/may/07/leadersandreply.mainsection")
 	if err != nil {
-		panic(err)
+		t.Errorf("getArticleById error: %v", err)
 	}
-	fmt.Printf("Article summary: %s", article.Blocks.Body[0].BodyTextSummary)
+	assert.Contains(t, article.Blocks.Body[0].BodyTextSummary, "Thackeray")
+	//fmt.Printf("Article summary: %s", article.Blocks.Body[0].BodyTextSummary)
+	//prettyJson, err := json.MarshalIndent(article, "", "  ")
+	//if err != nil {
+	//	t.Errorf("TestGetSingleArticle marshalling error: %v", err)
+	//}
+	//fmt.Println(string(prettyJson))
+
 }
 
 func TestGuardian(t *testing.T) {
