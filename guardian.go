@@ -29,6 +29,7 @@ type (
 		OrderBy     string     `json:"orderBy"`
 		Results     []*Article `json:"results"`
 	}
+
 	Article struct {
 		Id                 string        `json:"id"`
 		Type               string        `json:"type"`
