@@ -33,3 +33,16 @@ func ListTables() (*dynamodb.ListTablesOutput, error){
 	fmt.Print(result)
 	return result, nil
 }
+
+ func CreateTable(input *dynamodb.CreateTableInput) error {
+	 svc := dynamodb.New(sess)
+	 _, err := svc.CreateTable(input)
+	 return err
+ }
+
+func DeleteTable(input *dynamodb.DeleteTableInput) error {
+	svc := dynamodb.New(sess)
+	_, err := svc.DeleteTable(input)
+	return err
+}
+
