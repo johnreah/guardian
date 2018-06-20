@@ -10,3 +10,14 @@ It requires the following environment variables to be set:
   the `config` and `credentials` files in the user's `.aws` directory 
 * `AWS_PROFILE` set to the name of a user in the credentials file (if not set,the default user will be used)
 * `GUARDIAN_API_KEY` set to an access key for the Guardian API
+
+##### Notes
+
+Run with `go run`
+
+Unit test with `go test`
+
+Get verbose testing output with` go test -v`
+
+Include integration tests with `go test -v -tags=integration` as described [here](http://peter.bourgon.org/go-in-production/#testing-and-validation).
+
