@@ -19,19 +19,19 @@ type (
 	}
 
 	SearchResponse struct {
-		Status      string     `json:"status"`
-		UserTier    string     `json:"userTier"`
-		Total       int        `json:"total"`
-		StartIndex  int        `json:"startIndex"`
-		PageSize    int        `json:"pageSize"`
-		CurrentPage int        `json:"currentPage"`
-		Pages       int        `json:"pages"`
-		OrderBy     string     `json:"orderBy"`
-		Results     []*Article `json:"results"`
+		Status      string             `json:"status"`
+		UserTier    string             `json:"userTier"`
+		Total       int                `json:"total"`
+		StartIndex  int                `json:"startIndex"`
+		PageSize    int                `json:"pageSize"`
+		CurrentPage int                `json:"currentPage"`
+		Pages       int                `json:"pages"`
+		OrderBy     string             `json:"orderBy"`
+		Results     []*GuardianArticle `json:"results"`
 	}
 
-	Article struct {
-		Id                 string        `json:"id"`
+	GuardianArticle struct {
+		Id_                string        `json:"id"`
 		Type               string        `json:"type"`
 		SectionId          string        `json:"sectionId"`
 		SectionName        string        `json:"sectionName"`
@@ -76,12 +76,34 @@ type (
 	}
 
 	ArticleResponse struct {
-		Status   string  `json:"status"`
-		UserTier string  `json:"userTier"`
-		Total    int     `json:"total"`
-		Content  Article `json:"content"`
+		Status   string          `json:"status"`
+		UserTier string          `json:"userTier"`
+		Total    int             `json:"total"`
+		Content  GuardianArticle `json:"content"`
 	}
 )
+
+// Id is a thing
+func (ga GuardianArticle) Id() string {
+	return ga.Id_
+}
+
+func (ga GuardianArticle) Title() string {
+	return ga.WebTitle
+}
+
+func (ga GuardianArticle) Body() string {
+	return ga.Blocks.Body[0].BodyTextSummary
+}
+
+func (ga GuardianArticle) Source() string {
+	var ba []byte
+	var err error
+	if ba, err = json.Marshal(ga); err != nil {
+		panic(err)
+	}
+	return string(ba[:])
+}
 
 func searchDefault() {
 	response, err := http.Get("https://content.guardianapis.com/search?api-key=" + apiKey)
@@ -103,7 +125,7 @@ func searchDefault() {
 	//fmt.Print(string(prettyJson))
 }
 
-func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Article, err error) {
+func getArticlesFromDate(startTime time.Time, pageSize int) (articles []GuardianArticle, err error) {
 	response, err := http.Get("https://content.guardianapis.com/search" +
 		"?api-key=" + apiKey +
 		"&order-by=oldest" +
@@ -130,7 +152,7 @@ func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Article,
 	//fmt.Print(string(prettyJson))
 
 	for _, v := range responseWrapper.Response.Results {
-		//fmt.Printf("i=%d, id=%s\n", i, v.Id)
+		//fmt.Printf("i=%d, id=%s\n", i, v.Id_)
 		articles = append(articles, *v)
 	}
 
@@ -140,7 +162,7 @@ func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Article,
 // GetArticlesByDatePaginated retrieves a page of articles. Repeated calls with
 // increasing values for pageIndex can retrievew larger sets of articles.
 // PageIndex starts at 1. Maximum page size appears to be 200.
-func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (articles []Article, err error) {
+func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (articles []GuardianArticle, err error) {
 	url := "https://content.guardianapis.com/search?" +
 		"order-by=oldest" +
 		"&show-blocks=all" +
@@ -175,14 +197,14 @@ func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (a
 	//fmt.Println(string(prettyJson))
 
 	for _, v := range responseWrapper.Response.Results {
-		//fmt.Printf("i=%d, id=%s\n", i, v.Id)
+		//fmt.Printf("i=%d, id=%s\n", i, v.Id_)
 		articles = append(articles, *v)
 	}
 
 	return articles, nil
 }
 
-func getArticleById(id string) (*Article, error) {
+func getArticleById(id string) (*GuardianArticle, error) {
 
 	url := "https://content.guardianapis.com/" + id + "?show-blocks=all"
 	request, err := http.NewRequest("GET", url, nil)

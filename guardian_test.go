@@ -29,7 +29,7 @@ func testGetSingleArticle(t *testing.T) {
 		t.Errorf("getArticleById error: %v", err)
 	}
 	assert.Contains(t, article.Blocks.Body[0].BodyTextSummary, "Thackeray")
-	//fmt.Printf("Article summary: %s", article.Blocks.Body[0].BodyTextSummary)
+	//fmt.Printf("GuardianArticle summary: %s", article.Blocks.Body[0].BodyTextSummary)
 	//prettyJson, err := json.MarshalIndent(article, "", "  ")
 	//if err != nil {
 	//	t.Errorf("TestGetSingleArticle marshalling error: %v", err)
@@ -51,7 +51,7 @@ func testGetArticlesByDatePaginated(t *testing.T) {
 		}
 		log.Printf("main received %d articles\n", len(articles))
 		for _, v := range articles {
-			log.Printf("%s\n", v.Id)
+			log.Printf("%s\n", v.Id_)
 			pagesRetrieved++
 		}
 	}
@@ -73,7 +73,7 @@ func TestScraping(t *testing.T) {
 		}
 		fmt.Printf("Got %d articles\n", len(articles))
 		for _, v := range articles {
-			fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id)
+			fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id_)
 			pagesRetrieved++
 		}
 	}
