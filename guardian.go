@@ -31,7 +31,7 @@ type (
 	}
 
 	GuardianArticle struct {
-		Id_                string        `json:"id"`
+		Id                 string        `json:"id"`
 		Type               string        `json:"type"`
 		SectionId          string        `json:"sectionId"`
 		SectionName        string        `json:"sectionName"`
@@ -83,20 +83,23 @@ type (
 	}
 )
 
-// Id is a thing
-func (ga GuardianArticle) Id() string {
-	return ga.Id_
+func (ga *GuardianArticle) IdString() string {
+	return ga.Id
 }
 
-func (ga GuardianArticle) Title() string {
+func (ga *GuardianArticle) Title() string {
 	return ga.WebTitle
 }
 
-func (ga GuardianArticle) Body() string {
+func (ga *GuardianArticle) ArticleDate() time.Time {
+	return time.Now() //TODO
+}
+
+func (ga *GuardianArticle) Body() string {
 	return ga.Blocks.Body[0].BodyTextSummary
 }
 
-func (ga GuardianArticle) Source() string {
+func (ga *GuardianArticle) Json() string {
 	var ba []byte
 	var err error
 	if ba, err = json.Marshal(ga); err != nil {
@@ -160,7 +163,7 @@ func getArticlesFromDate(startTime time.Time, pageSize int) (articles []Guardian
 }
 
 // GetArticlesByDatePaginated retrieves a page of articles. Repeated calls with
-// increasing values for pageIndex can retrievew larger sets of articles.
+// increasing values for pageIndex can retrieve larger sets of articles.
 // PageIndex starts at 1. Maximum page size appears to be 200.
 func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (articles []GuardianArticle, err error) {
 	url := "https://content.guardianapis.com/search?" +
