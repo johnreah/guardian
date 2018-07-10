@@ -65,19 +65,40 @@ func TestScraping(t *testing.T) {
 	fmt.Println("Starting...")
 	startTime := time.Now()
 
-	const pageSize int = 200
-	const numPages int = 2
-	fromTime := time.Date(1700, 1, 1, 0, 0, 0, 0, time.UTC)
-	pagesRetrieved := 0
-	for i := 1; i <= numPages; i++ {
-		articles, err := GetArticlesByDatePaginated(i, pageSize, fromTime)
+	const connectionString = "server=localhost;port=1433;database=Articles;user id=articles;password=articles;"
+	repo, err := CreateRepositorySql(connectionString)
+	if err != nil {
+		t.Errorf("Failed to connect to SQL")
+	}
+
+	const numQueries int = 100
+	for q := 1; q <= numQueries; q++ {
+		fromTime := time.Date(1700, 1, 1, 0, 0, 0, 0, time.UTC)
+		latestArticle, err := repo.GetMostRecent()
 		if err != nil {
-			panic(err)
+			t.Errorf("Failed to get most recent article")
+		} else if latestArticle == nil {
+			fmt.Printf("No latest article exists - defaulting start date to %v\n", fromTime)
+		} else {
+			fromTime = latestArticle.ArticleDate()
+			fmt.Printf("Date of latest article: %v\n", fromTime)
 		}
-		fmt.Printf("Got %d articles\n", len(articles))
-		for _, v := range articles {
-			fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id)
-			pagesRetrieved++
+
+		const pageSize int = 200
+		const numPages int = 175
+		pagesRetrieved := 0
+		for i := 1; i <= numPages; i++ {
+			fmt.Printf("Query %d requesting page %d\n", q, i)
+			articles, err := GetArticlesByDatePaginated(i, pageSize, fromTime)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("Got %d articles\n", len(articles))
+			for _, v := range articles {
+				fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id)
+				repo.Put(&v)
+				pagesRetrieved++
+			}
 		}
 	}
 	fmt.Printf("\nFinished in %dms\n", time.Now().Sub(startTime)/1000000)

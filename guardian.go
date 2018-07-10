@@ -83,20 +83,28 @@ type (
 	}
 )
 
-func (ga *GuardianArticle) IdString() string {
+func (ga *GuardianArticle) ArticleId() string {
 	return ga.Id
+}
+
+func (ga *GuardianArticle) ArticleDate() time.Time {
+	t, err := time.Parse("2006-01-02T15:04:05Z", ga.WebPublicationDate)
+	if err != nil {
+		panic(err)
+	}
+	return t
 }
 
 func (ga *GuardianArticle) Title() string {
 	return ga.WebTitle
 }
 
-func (ga *GuardianArticle) ArticleDate() time.Time {
-	return time.Now() //TODO
-}
-
 func (ga *GuardianArticle) Body() string {
-	return ga.Blocks.Body[0].BodyTextSummary
+	if len(ga.Blocks.Body) > 0 {
+		return ga.Blocks.Body[0].BodyTextSummary
+	} else {
+		return ""
+	}
 }
 
 func (ga *GuardianArticle) Json() string {
@@ -183,7 +191,7 @@ func GetArticlesByDatePaginated(pageIndex, pageSize int, startTime time.Time) (a
 		return nil, err
 	}
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("response %s from GET: %v", response.Status, err)
+		return nil, fmt.Errorf("response %s from GET", response.Status)
 	}
 	defer response.Body.Close()
 	data, _ := ioutil.ReadAll(response.Body)

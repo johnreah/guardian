@@ -19,24 +19,31 @@ func TestGuardianArticleCast(t *testing.T) {
 		},
 	}
 	a := Article(ga)
-	assert.Equal(t, a.IdString(), "testId")
+	assert.Equal(t, a.ArticleId(), "testId")
 	assert.Equal(t, a.Title(), "testTitle")
 	assert.Equal(t, a.Body(), "testBody")
 }
 
 func TestTestArticleCast(t *testing.T) {
-	ta := makeTestArticle("testIdString", "testTitle", time.Now(), "testBody", "testJson")
+	ta := makeTestArticle("testIdString", time.Now(), "testTitle", "testBody", "testJson")
 	a := Article(ta)
-	assert.Equal(t, a.IdString(), "testIdString")
+	assert.Equal(t, a.ArticleId(), "testIdString")
 	assert.Equal(t, a.Title(), "testTitle")
 	assert.Equal(t, a.Body(), "testBody")
 	assert.Equal(t, a.Json(), "testJson")
 }
 
-func makeTestArticle(idString, title string, articleDate time.Time, body, json string) *TestArticle {
-	return &TestArticle{idString, title, articleDate, body, json}
+func makeTestArticle(articleId string, articleDate time.Time, title, body, json string) *TestArticle {
+	return &TestArticle{
+		articleId: articleId,
+		articleDate: articleDate,
+		title: title,
+		body: body,
+		json: json,
+	}
 }
 
+/*
 type TestArticle struct {
 	idString string
 	title string
@@ -45,8 +52,9 @@ type TestArticle struct {
 	json string
 }
 
-func (ta *TestArticle) IdString() string { return ta.idString }
+func (ta *TestArticle) ArticleId() string { return ta.idString }
 func (ta *TestArticle) Title() string { return ta.title }
 func (ta *TestArticle) ArticleDate() time.Time { return ta.articleDate }
 func (ta *TestArticle) Body() string { return ta.body }
 func (ta *TestArticle) Json() string { return ta.json }
+*/
