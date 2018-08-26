@@ -96,7 +96,9 @@ func TestScraping(t *testing.T) {
 			fmt.Printf("Got %d articles\n", len(articles))
 			for _, v := range articles {
 				fmt.Printf("%s %s\n", v.WebPublicationDate, v.Id)
-				repo.Put(&v)
+				if err := repo.Put(&v); err != nil {
+					fmt.Printf("Error writing article - ignoring: %v\n", err)
+				}
 				pagesRetrieved++
 			}
 		}
