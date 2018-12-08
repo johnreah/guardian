@@ -67,7 +67,7 @@ func (repo *RepositorySql) Put(article Article) error {
 		fmt.Printf("Failed to get rowsAffected: %v\n", rowsErr)
 	}
 	if rowsAffected != 1 {
-		return fmt.Errorf("Insert succeeded but rowsAffected = %d instead of 1", rowsAffected)
+		return fmt.Errorf("insert succeeded but rowsAffected = %d instead of 1", rowsAffected)
 	}
 	return nil
 }
